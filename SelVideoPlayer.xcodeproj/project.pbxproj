@@ -1,0 +1,463 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		DD2E2CCE3988CECC86F60DA6 /* libPods-SelVideoPlayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3176ECFB7EC5CC82DA43F053 /* libPods-SelVideoPlayer.a */; };
+		ED1F3BBE201DA6BC00CC2665 /* SelVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ED1F3BBD201DA6BC00CC2665 /* SelVideoViewController.m */; };
+		ED80DF57201B20EA00C19BFF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ED80DF56201B20EA00C19BFF /* AppDelegate.m */; };
+		ED80DF5F201B20EA00C19BFF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ED80DF5E201B20EA00C19BFF /* Assets.xcassets */; };
+		ED80DF62201B20EA00C19BFF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ED80DF60201B20EA00C19BFF /* LaunchScreen.storyboard */; };
+		ED80DF65201B20EA00C19BFF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ED80DF64201B20EA00C19BFF /* main.m */; };
+		ED80DF71201B235B00C19BFF /* SelMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ED80DF70201B235B00C19BFF /* SelMainViewController.m */; };
+		ED80DF74201B2C1100C19BFF /* SelVideoPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = ED80DF73201B2C1100C19BFF /* SelVideoPlayer.m */; };
+		ED80DF7F201B558300C19BFF /* SelPlayerConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = ED80DF7E201B558300C19BFF /* SelPlayerConfiguration.m */; };
+		ED80DF82201B793D00C19BFF /* SelPlaybackControls.m in Sources */ = {isa = PBXBuildFile; fileRef = ED80DF81201B793D00C19BFF /* SelPlaybackControls.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		3176ECFB7EC5CC82DA43F053 /* libPods-SelVideoPlayer.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SelVideoPlayer.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		639453A83E8ACF590310108F /* Pods-SelVideoPlayer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SelVideoPlayer.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SelVideoPlayer/Pods-SelVideoPlayer.debug.xcconfig"; sourceTree = "<group>"; };
+		AFD63DE5BD83AB5638A44B74 /* Pods-SelVideoPlayer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SelVideoPlayer.release.xcconfig"; path = "Pods/Target Support Files/Pods-SelVideoPlayer/Pods-SelVideoPlayer.release.xcconfig"; sourceTree = "<group>"; };
+		ED1F3BBC201DA6BC00CC2665 /* SelVideoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelVideoViewController.h; sourceTree = "<group>"; };
+		ED1F3BBD201DA6BC00CC2665 /* SelVideoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelVideoViewController.m; sourceTree = "<group>"; };
+		ED80DF52201B20EA00C19BFF /* SelVideoPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SelVideoPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED80DF55201B20EA00C19BFF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		ED80DF56201B20EA00C19BFF /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		ED80DF5E201B20EA00C19BFF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		ED80DF61201B20EA00C19BFF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		ED80DF63201B20EA00C19BFF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ED80DF64201B20EA00C19BFF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		ED80DF6F201B235B00C19BFF /* SelMainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelMainViewController.h; sourceTree = "<group>"; };
+		ED80DF70201B235B00C19BFF /* SelMainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelMainViewController.m; sourceTree = "<group>"; };
+		ED80DF72201B2C1100C19BFF /* SelVideoPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelVideoPlayer.h; sourceTree = "<group>"; };
+		ED80DF73201B2C1100C19BFF /* SelVideoPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelVideoPlayer.m; sourceTree = "<group>"; };
+		ED80DF7D201B558300C19BFF /* SelPlayerConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelPlayerConfiguration.h; sourceTree = "<group>"; };
+		ED80DF7E201B558300C19BFF /* SelPlayerConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelPlayerConfiguration.m; sourceTree = "<group>"; };
+		ED80DF80201B793D00C19BFF /* SelPlaybackControls.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelPlaybackControls.h; sourceTree = "<group>"; };
+		ED80DF81201B793D00C19BFF /* SelPlaybackControls.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelPlaybackControls.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		ED80DF4F201B20EA00C19BFF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD2E2CCE3988CECC86F60DA6 /* libPods-SelVideoPlayer.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		282041365A4C02DA58AA6081 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3176ECFB7EC5CC82DA43F053 /* libPods-SelVideoPlayer.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		385E9555EAACC43E57B10110 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				639453A83E8ACF590310108F /* Pods-SelVideoPlayer.debug.xcconfig */,
+				AFD63DE5BD83AB5638A44B74 /* Pods-SelVideoPlayer.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		ED80DF49201B20EA00C19BFF = {
+			isa = PBXGroup;
+			children = (
+				ED80DF54201B20EA00C19BFF /* SelVideoPlayer */,
+				ED80DF53201B20EA00C19BFF /* Products */,
+				385E9555EAACC43E57B10110 /* Pods */,
+				282041365A4C02DA58AA6081 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		ED80DF53201B20EA00C19BFF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				ED80DF52201B20EA00C19BFF /* SelVideoPlayer.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ED80DF54201B20EA00C19BFF /* SelVideoPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				ED80DF6C201B224600C19BFF /* VideoPlayer */,
+				ED80DF6D201B232300C19BFF /* Class */,
+				ED80DF5E201B20EA00C19BFF /* Assets.xcassets */,
+				ED80DF60201B20EA00C19BFF /* LaunchScreen.storyboard */,
+				ED80DF63201B20EA00C19BFF /* Info.plist */,
+				ED80DF64201B20EA00C19BFF /* main.m */,
+			);
+			path = SelVideoPlayer;
+			sourceTree = "<group>";
+		};
+		ED80DF6C201B224600C19BFF /* VideoPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				ED80DF72201B2C1100C19BFF /* SelVideoPlayer.h */,
+				ED80DF73201B2C1100C19BFF /* SelVideoPlayer.m */,
+				ED80DF80201B793D00C19BFF /* SelPlaybackControls.h */,
+				ED80DF81201B793D00C19BFF /* SelPlaybackControls.m */,
+				ED80DF79201B2D5000C19BFF /* Configs */,
+			);
+			path = VideoPlayer;
+			sourceTree = "<group>";
+		};
+		ED80DF6D201B232300C19BFF /* Class */ = {
+			isa = PBXGroup;
+			children = (
+				ED80DF55201B20EA00C19BFF /* AppDelegate.h */,
+				ED80DF56201B20EA00C19BFF /* AppDelegate.m */,
+				ED80DF6E201B233F00C19BFF /* ViewController */,
+				ED80DF75201B2CD900C19BFF /* View */,
+			);
+			path = Class;
+			sourceTree = "<group>";
+		};
+		ED80DF6E201B233F00C19BFF /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				ED80DF6F201B235B00C19BFF /* SelMainViewController.h */,
+				ED80DF70201B235B00C19BFF /* SelMainViewController.m */,
+				ED1F3BBC201DA6BC00CC2665 /* SelVideoViewController.h */,
+				ED1F3BBD201DA6BC00CC2665 /* SelVideoViewController.m */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
+		ED80DF75201B2CD900C19BFF /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		ED80DF79201B2D5000C19BFF /* Configs */ = {
+			isa = PBXGroup;
+			children = (
+				ED80DF7D201B558300C19BFF /* SelPlayerConfiguration.h */,
+				ED80DF7E201B558300C19BFF /* SelPlayerConfiguration.m */,
+			);
+			path = Configs;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		ED80DF51201B20EA00C19BFF /* SelVideoPlayer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ED80DF68201B20EA00C19BFF /* Build configuration list for PBXNativeTarget "SelVideoPlayer" */;
+			buildPhases = (
+				8ED8C912F32BD1B6808B0F51 /* [CP] Check Pods Manifest.lock */,
+				ED80DF4E201B20EA00C19BFF /* Sources */,
+				ED80DF4F201B20EA00C19BFF /* Frameworks */,
+				ED80DF50201B20EA00C19BFF /* Resources */,
+				E632DF63FD6E161F48FC3CB5 /* [CP] Embed Pods Frameworks */,
+				8F884458C710A8ED7278285C /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SelVideoPlayer;
+			productName = SelVideoPlayer;
+			productReference = ED80DF52201B20EA00C19BFF /* SelVideoPlayer.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		ED80DF4A201B20EA00C19BFF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = selwyn;
+				TargetAttributes = {
+					ED80DF51201B20EA00C19BFF = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = ED80DF4D201B20EA00C19BFF /* Build configuration list for PBXProject "SelVideoPlayer" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = ED80DF49201B20EA00C19BFF;
+			productRefGroup = ED80DF53201B20EA00C19BFF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				ED80DF51201B20EA00C19BFF /* SelVideoPlayer */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		ED80DF50201B20EA00C19BFF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED80DF62201B20EA00C19BFF /* LaunchScreen.storyboard in Resources */,
+				ED80DF5F201B20EA00C19BFF /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		8ED8C912F32BD1B6808B0F51 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SelVideoPlayer-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8F884458C710A8ED7278285C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SelVideoPlayer/Pods-SelVideoPlayer-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E632DF63FD6E161F48FC3CB5 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SelVideoPlayer/Pods-SelVideoPlayer-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		ED80DF4E201B20EA00C19BFF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED80DF65201B20EA00C19BFF /* main.m in Sources */,
+				ED80DF57201B20EA00C19BFF /* AppDelegate.m in Sources */,
+				ED80DF71201B235B00C19BFF /* SelMainViewController.m in Sources */,
+				ED80DF82201B793D00C19BFF /* SelPlaybackControls.m in Sources */,
+				ED1F3BBE201DA6BC00CC2665 /* SelVideoViewController.m in Sources */,
+				ED80DF7F201B558300C19BFF /* SelPlayerConfiguration.m in Sources */,
+				ED80DF74201B2C1100C19BFF /* SelVideoPlayer.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		ED80DF60201B20EA00C19BFF /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				ED80DF61201B20EA00C19BFF /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		ED80DF66201B20EA00C19BFF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		ED80DF67201B20EA00C19BFF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		ED80DF69201B20EA00C19BFF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 639453A83E8ACF590310108F /* Pods-SelVideoPlayer.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2WJ4BEE5HT;
+				INFOPLIST_FILE = SelVideoPlayer/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = selwynbee.SelVideoPlayer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		ED80DF6A201B20EA00C19BFF /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AFD63DE5BD83AB5638A44B74 /* Pods-SelVideoPlayer.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2WJ4BEE5HT;
+				INFOPLIST_FILE = SelVideoPlayer/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = selwynbee.SelVideoPlayer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		ED80DF4D201B20EA00C19BFF /* Build configuration list for PBXProject "SelVideoPlayer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED80DF66201B20EA00C19BFF /* Debug */,
+				ED80DF67201B20EA00C19BFF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ED80DF68201B20EA00C19BFF /* Build configuration list for PBXNativeTarget "SelVideoPlayer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED80DF69201B20EA00C19BFF /* Debug */,
+				ED80DF6A201B20EA00C19BFF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = ED80DF4A201B20EA00C19BFF /* Project object */;
+}

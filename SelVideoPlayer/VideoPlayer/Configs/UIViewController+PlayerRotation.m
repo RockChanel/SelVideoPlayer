@@ -50,11 +50,16 @@
     for (NSUInteger index = 0; index < sizeof(selectors) / sizeof(SEL); ++index) {
         SEL originalSelector = selectors[index];
         SEL swizzledSelector = NSSelectorFromString([@"sel_" stringByAppendingString:NSStringFromSelector(originalSelector)]);
+        // 通过class_getInstanceMethod()函数从当前class对象中的method list获取method结构体
         Method originalMethod = class_getInstanceMethod(self, originalSelector);
         Method swizzledMethod = class_getInstanceMethod(self, swizzledSelector);
+        // 使用class_addMethod()函数对Method Swizzling做了一层验证，如果self没有实现swizzledSelector交换的方法，会导致失败
         if (class_addMethod(self, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod))) {
+            //class_replaceMethod向对象所属的类动态添加所需的selector：，如果swizzledSelector没有实现，
+            // class_replaceMethod，它有两种不同的行为。当类中没有想替换的原方法时，该方法会调用class_addMethod来为该类增加一个新方法，也因为如此，class_replaceMethod在调用时需要传入types参数，而method_exchangeImplementations和method_setImplementation却不需要。
             class_replaceMethod(self, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod));
         } else {
+            // 通过class_addMethod()的验证，如果self实现了swizzledViwDidLoad这个方法，class_addMethod()函数将会返回NO，进行交换了
             method_exchangeImplementations(originalMethod, swizzledMethod);
         }
     }

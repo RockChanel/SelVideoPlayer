@@ -21,13 +21,51 @@
     return self;
 }
 
+/**
+ 设置视频时间显示以及滑杆状态
+ @param playTime 当前播放时间
+ @param totalTime 视频总时间
+ @param sliderValue 滑杆滑动值
+ */
+- (void)_setPlaybackControlsWithPlayTime:(NSInteger)playTime totalTime:(NSInteger)totalTime sliderValue:(CGFloat)sliderValue
+{
+    //当前时长进度progress
+    NSInteger proMin = playTime / 60;//当前秒
+    NSInteger proSec = playTime % 60;//当前分钟
+    //duration 总时长
+    NSInteger durMin = totalTime / 60;//总秒
+    NSInteger durSec = totalTime % 60;//总分钟
+    
+    //更新当前播放时间
+    self.videoSlider.value = sliderValue;
+    self.progress.progress = sliderValue;
+    self.playTimeLabel.text = [NSString stringWithFormat:@"%02zd:%02zd", proMin, proSec];
+    //更新总时间
+    self.totalTimeLabel.text = [NSString stringWithFormat:@"%02zd:%02zd", durMin, durSec];
+}
+
+/**
+ 根据播放状态调整控制面板UI显示
+ @param isPlaying 播放状态
+ */
+- (void)_setPlaybackControlsWithIsPlaying:(BOOL)isPlaying
+{
+    self.playButton.selected = isPlaying;
+}
+
 /** 创建UI */
 - (void)setupUI
 {
     [self addSubview:self.playButton];
-    [self addSubview:self.fullScreenButton];
-    [self makeConstraints];
+    [self addSubview:self.bottomControlsBar];
     
+    [_bottomControlsBar addSubview:self.playTimeLabel];
+    [_bottomControlsBar addSubview:self.totalTimeLabel];
+    [_bottomControlsBar addSubview:self.fullScreenButton];
+    [_bottomControlsBar addSubview:self.progress];
+    [_bottomControlsBar addSubview:self.videoSlider];
+    
+    [self makeConstraints];
     [self addGesture];
 }
 
@@ -55,10 +93,48 @@
         make.size.mas_equalTo(CGSizeMake(80, 80));
     }];
     
+    [_bottomControlsBar mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.bottom.equalTo(self);
+        make.height.mas_equalTo(30);
+    }];
+    
     [_fullScreenButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.bottom.mas_equalTo(-20);
+        make.right.bottom.mas_equalTo(-5);
         make.size.mas_equalTo(CGSizeMake(20, 20));
     }];
+    
+    [_playTimeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(5);
+        make.width.mas_equalTo(45);
+        make.centerY.mas_equalTo(_bottomControlsBar.mas_centerY);
+    }];
+    
+    [_totalTimeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(_fullScreenButton.mas_left).offset(-5);
+        make.width.mas_equalTo(45);
+        make.centerY.mas_equalTo(_bottomControlsBar.mas_centerY);
+    }];
+    
+    [_progress mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.playTimeLabel.mas_right).offset(5);
+        make.right.equalTo(self.totalTimeLabel.mas_left).offset(-5);
+        make.height.mas_equalTo(2);
+        make.centerY.equalTo(_bottomControlsBar.mas_centerY);
+    }];
+    
+    [_videoSlider mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(_progress);
+    }];
+}
+
+/** 底部控制栏 */
+- (UIView *)bottomControlsBar
+{
+    if (!_bottomControlsBar) {
+        _bottomControlsBar = [[UIView alloc]init];
+        _bottomControlsBar.userInteractionEnabled = YES;
+    }
+    return _bottomControlsBar;
 }
 
 /** 播放按钮 */
@@ -83,6 +159,80 @@
         [_fullScreenButton addTarget:self action:@selector(fullScreenAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _fullScreenButton;
+}
+
+
+/** 当前播放时间 */
+- (UILabel *)playTimeLabel
+{
+    if (!_playTimeLabel) {
+        _playTimeLabel = [[UILabel alloc]init];
+        _playTimeLabel.font = [UIFont systemFontOfSize:14];
+        _playTimeLabel.text = @"00:00";
+        _playTimeLabel.adjustsFontSizeToFitWidth = YES;
+        _playTimeLabel.textAlignment = NSTextAlignmentCenter;
+        _playTimeLabel.textColor = [UIColor whiteColor];
+    }
+    return _playTimeLabel;
+}
+
+/** 视频总时间 */
+- (UILabel *)totalTimeLabel
+{
+    if (!_totalTimeLabel) {
+        _totalTimeLabel = [[UILabel alloc]init];
+        _totalTimeLabel.font = [UIFont systemFontOfSize:14];
+        _totalTimeLabel.text = @"00:00";
+        _totalTimeLabel.adjustsFontSizeToFitWidth = YES;
+        _totalTimeLabel.textAlignment = NSTextAlignmentCenter;
+        _totalTimeLabel.textColor = [UIColor whiteColor];
+    }
+    return _totalTimeLabel;
+}
+
+
+/** 播放进度条 */
+- (UIProgressView *)progress
+{
+    if (!_progress) {
+        _progress = [[UIProgressView alloc]init];
+    }
+    return _progress;
+}
+
+/** 滑杆 */
+- (SelVideoSlider *)videoSlider
+{
+    if (!_videoSlider) {
+        _videoSlider = [[SelVideoSlider alloc]init];
+        //开始拖动事件
+        [_videoSlider addTarget:self action:@selector(progressSliderTouchBegan:) forControlEvents:UIControlEventTouchDown];
+        //拖动中事件
+        [_videoSlider addTarget:self action:@selector(progressSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
+        //结束拖动事件
+        [_videoSlider addTarget:self action:@selector(progressSliderTouchEnded:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchCancel | UIControlEventTouchUpOutside];
+    }
+    return _videoSlider;
+}
+
+#pragma mark - 滑杆
+/** 开始拖动事件 */
+- (void)progressSliderTouchBegan:(SelVideoSlider *)slider{
+    if (_delegate && [_delegate respondsToSelector:@selector(videoSliderTouchBegan:)]) {
+        [_delegate videoSliderTouchBegan:slider];
+    }
+}
+/** 拖动中事件 */
+- (void)progressSliderValueChanged:(SelVideoSlider *)slider{
+    if (_delegate && [_delegate respondsToSelector:@selector(videoSliderValueChanged:)]) {
+        [_delegate videoSliderValueChanged:slider];
+    }
+}
+/** 结束拖动事件 */
+- (void)progressSliderTouchEnded:(SelVideoSlider *)slider{
+    if (_delegate && [_delegate respondsToSelector:@selector(videoSliderTouchEnded:)]) {
+        [_delegate videoSliderTouchEnded:slider];
+    }
 }
 
 /** 播放按钮点击事件 */

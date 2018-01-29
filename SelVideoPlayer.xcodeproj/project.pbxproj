@@ -10,6 +10,7 @@
 		DD2E2CCE3988CECC86F60DA6 /* libPods-SelVideoPlayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3176ECFB7EC5CC82DA43F053 /* libPods-SelVideoPlayer.a */; };
 		ED1F3BBE201DA6BC00CC2665 /* SelVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ED1F3BBD201DA6BC00CC2665 /* SelVideoViewController.m */; };
 		ED6259A5201EDD4B00E576CC /* UIViewController+PlayerRotation.m in Sources */ = {isa = PBXBuildFile; fileRef = ED6259A4201EDD4B00E576CC /* UIViewController+PlayerRotation.m */; };
+		ED6259A8201EF59200E576CC /* SelVideoSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = ED6259A7201EF59200E576CC /* SelVideoSlider.m */; };
 		ED80DF57201B20EA00C19BFF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ED80DF56201B20EA00C19BFF /* AppDelegate.m */; };
 		ED80DF5F201B20EA00C19BFF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ED80DF5E201B20EA00C19BFF /* Assets.xcassets */; };
 		ED80DF62201B20EA00C19BFF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ED80DF60201B20EA00C19BFF /* LaunchScreen.storyboard */; };
@@ -28,6 +29,8 @@
 		ED1F3BBD201DA6BC00CC2665 /* SelVideoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelVideoViewController.m; sourceTree = "<group>"; };
 		ED6259A3201EDD4B00E576CC /* UIViewController+PlayerRotation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+PlayerRotation.h"; sourceTree = "<group>"; };
 		ED6259A4201EDD4B00E576CC /* UIViewController+PlayerRotation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+PlayerRotation.m"; sourceTree = "<group>"; };
+		ED6259A6201EF59200E576CC /* SelVideoSlider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelVideoSlider.h; sourceTree = "<group>"; };
+		ED6259A7201EF59200E576CC /* SelVideoSlider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelVideoSlider.m; sourceTree = "<group>"; };
 		ED80DF52201B20EA00C19BFF /* SelVideoPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SelVideoPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED80DF55201B20EA00C19BFF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		ED80DF56201B20EA00C19BFF /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -112,6 +115,8 @@
 				ED80DF73201B2C1100C19BFF /* SelVideoPlayer.m */,
 				ED80DF80201B793D00C19BFF /* SelPlaybackControls.h */,
 				ED80DF81201B793D00C19BFF /* SelPlaybackControls.m */,
+				ED6259A6201EF59200E576CC /* SelVideoSlider.h */,
+				ED6259A7201EF59200E576CC /* SelVideoSlider.m */,
 				ED80DF79201B2D5000C19BFF /* Configs */,
 			);
 			path = VideoPlayer;
@@ -283,6 +288,7 @@
 			files = (
 				ED80DF65201B20EA00C19BFF /* main.m in Sources */,
 				ED80DF57201B20EA00C19BFF /* AppDelegate.m in Sources */,
+				ED6259A8201EF59200E576CC /* SelVideoSlider.m in Sources */,
 				ED80DF71201B235B00C19BFF /* SelMainViewController.m in Sources */,
 				ED6259A5201EDD4B00E576CC /* UIViewController+PlayerRotation.m in Sources */,
 				ED80DF82201B793D00C19BFF /* SelPlaybackControls.m in Sources */,

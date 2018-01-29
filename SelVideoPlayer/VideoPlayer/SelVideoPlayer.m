@@ -10,7 +10,15 @@
 #import <AVFoundation/AVFoundation.h>
 #import "SelPlayerConfiguration.h"
 #import "SelPlaybackControls.h"
-#import <CoreMotion/CoreMotion.h>
+
+// 播放器的几种状态
+typedef NS_ENUM(NSInteger, SelVideoPlayerState) {
+    SelVideoPlayerStateFailed,     // 播放失败
+    SelVideoPlayerStateBuffering,  // 缓冲中
+    SelVideoPlayerStatePlaying,    // 播放中
+    SelVideoPlayerStateStopped,    // 停止播放
+    SelVideoPlayerStatePause       // 暂停播放
+};
 
 @interface SelVideoPlayer()<SelPlaybackControlsDelegate>
 
@@ -34,6 +42,10 @@
 @property (nonatomic, strong) UIView *originalSuperview;
 /** 非全屏状态下播放器 frame */
 @property (nonatomic, assign) CGRect originalRect;
+/** 时间监听器 */
+@property (nonatomic, strong) id timeObserve;
+
+@property (nonatomic, assign) SelVideoPlayerState playerState;
 
 @end
 
@@ -50,6 +62,7 @@
         
         _playerConfiguration = configuration;
         [self _setupPlayer];
+        [self _setupPlayControls];
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
     }
@@ -139,10 +152,29 @@
     [_player pause];
 }
 
+/** 重新播放 */
 - (void)_replayVideo
 {
     [_player seekToTime:CMTimeMake(0, 1) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
-    [self _playVideo];
+    self.isPlaying = YES;
+}
+
+
+/** 监听播放器事件 */
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"loadedTimeRanges"]){
+        
+    }
+    else if ([keyPath isEqualToString:@"playbackBufferEmpty"]){
+        
+    }
+    else if ([keyPath isEqualToString:@"status"])
+    {
+        if (self.player.currentItem.status == AVPlayerStatusReadyToPlay) {
+            
+        }
+    }
 }
 
 /** 屏幕翻转监听事件 */
@@ -160,7 +192,7 @@
         [self _replayVideo];
     }else
     {
-        [self _pauseVideo];
+        self.isPlaying = NO;
     }
 }
 
@@ -173,12 +205,36 @@
     [self _setVideoGravity:_playerConfiguration.videoGravity];
     [self.layer insertSublayer:_playerLayer atIndex:0];
     
-    [self addSubview:self.playbackControls];
+    [self createTimer];
     
     if (_playerConfiguration.shouldAutoPlay) {
-        [self _playVideo];
+        self.isPlaying = YES;
     }
 }
+
+
+/** 添加播放器控制面板 */
+- (void)_setupPlayControls
+{
+    [self addSubview:self.playbackControls];
+}
+
+
+/** 创建定时器 */
+- (void)createTimer {
+    __weak typeof(self) weakSelf = self;
+    self.timeObserve = [self.player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1, 1) queue:nil usingBlock:^(CMTime time){
+        AVPlayerItem *currentItem = weakSelf.playerItem;
+        NSArray *loadedRanges = currentItem.seekableTimeRanges;
+        if (loadedRanges.count > 0 && currentItem.duration.timescale != 0) {
+            NSInteger currentTime = (NSInteger)CMTimeGetSeconds([currentItem currentTime]);
+            CGFloat totalTime = (CGFloat)currentItem.duration.value / currentItem.duration.timescale;
+            CGFloat value = CMTimeGetSeconds([currentItem currentTime]) / totalTime;
+            [weakSelf.playbackControls _setPlaybackControlsWithPlayTime:currentTime totalTime:totalTime sliderValue:value];
+        }
+    }];
+}
+
 
 /** 释放播放器 */
 - (void)_deallocPlayer
@@ -188,6 +244,7 @@
     [self.playbackControls removeFromSuperview];
     [self.playerLayer removeFromSuperlayer];
     [self removeFromSuperview];
+    self.playerItem = nil;
     self.playerLayer = nil;
     self.player = nil;
     self.playbackControls = nil;
@@ -223,7 +280,6 @@
     _playbackControls.fullScreenButton.selected = isFullScreen;
 }
 
-
 /** isPlaying Set方法 */
 - (void)setIsPlaying:(BOOL)isPlaying
 {
@@ -234,6 +290,7 @@
     {
         [self _pauseVideo];
     }
+    [self.playbackControls _setPlaybackControlsWithIsPlaying:self.isPlaying];
 }
 
 
@@ -246,6 +303,19 @@
                                                  selector:@selector(videoDidPlayToEnd:)
                                                      name:AVPlayerItemDidPlayToEndTimeNotification
                                                    object:nil];
+        
+        [_playerItem addObserver:self
+                     forKeyPath:@"status"
+                        options:NSKeyValueObservingOptionNew
+                        context:nil];
+        [_playerItem addObserver:self
+                     forKeyPath:@"loadedTimeRanges"
+                        options:NSKeyValueObservingOptionNew
+                        context:nil];
+        [_playerItem addObserver:self
+                     forKeyPath:@"playbackBufferEmpty"
+                        options:NSKeyValueObservingOptionNew
+                        context:nil];
     }
     return _playerItem;
 }
@@ -271,12 +341,19 @@
 /** 释放Self */
 - (void)dealloc
 {
+    [_playerItem removeObserver:self forKeyPath:@"status"];
+    [_playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+    [_playerItem removeObserver:self forKeyPath:@"playbackBufferEmpty"];
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIDeviceOrientationDidChangeNotification
                                                   object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
-    [[UIApplication sharedApplication]setStatusBarHidden:NO];
+    
+    if (self.timeObserve) {
+        [self.player removeTimeObserver:self.timeObserve];
+        self.timeObserve = nil;
+    }
 }
 
 #pragma mark 播放器控制面板代理
@@ -312,8 +389,36 @@
     NSLog(@"doubleTap");
     if (_playerConfiguration.supportedDoubleTap) {
         self.isPlaying = !self.isPlaying;
-        self.playbackControls.playButton.selected = self.isPlaying;
     }
+}
+
+#pragma mark 滑杆拖动
+/** 开始拖动 */
+-(void)videoSliderTouchBegan:(SelVideoSlider *)slider{
+    self.isPlaying = NO;
+}
+/** 结束拖动 */
+-(void)videoSliderTouchEnded:(SelVideoSlider *)slider{
+
+    if (slider.value != 1) {
+        if (!self.playerItem.isPlaybackLikelyToKeepUp) {
+            //[self bufferingSomeSecond];
+        }else{
+            //继续播放
+            self.isPlaying = YES;
+        }
+    }
+}
+
+/** 拖拽中 */
+-(void)videoSliderValueChanged:(SelVideoSlider *)slider{
+    CGFloat totalTime = (CGFloat)_playerItem.duration.value / _playerItem.duration.timescale;
+    CGFloat dragedSeconds = totalTime * slider.value;
+    //转换成CMTime才能给player来控制播放进度
+    CMTime dragedCMTime = CMTimeMake(dragedSeconds, 1);
+    [_player seekToTime:dragedCMTime toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+    NSInteger currentTime = (NSInteger)CMTimeGetSeconds(dragedCMTime);
+    [_playbackControls _setPlaybackControlsWithPlayTime:currentTime totalTime:totalTime sliderValue:slider.value];
 }
 
 @end

@@ -18,7 +18,7 @@
 - (void)_playVideo;
 /** 暂停播放 */
 - (void)_pauseVideo;
-
+/** 释放播放器 */
 - (void)_deallocPlayer;
 
 @end

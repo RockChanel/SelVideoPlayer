@@ -31,7 +31,10 @@ typedef NS_ENUM(NSUInteger,SelVideoGravity){
 @property (nonatomic, assign) BOOL supportedDoubleTap;
 /** 是否支持自动转屏 */
 @property (nonatomic, assign) BOOL shouldAutorotate;
+
+
+
 /** 是否支持横屏全屏播放 */
-@property (nonatomic, assign) BOOL supportedFullScreen;
+//@property (nonatomic, assign) BOOL supportedFullScreen;
 
 @end

@@ -35,10 +35,6 @@
 /** 非全屏状态下播放器 frame */
 @property (nonatomic, assign) CGRect originalRect;
 
-//@property (nonatomic, assign) BOOL isStatusBarHidden;
-
-@property (nonatomic, assign) BOOL isLandscape;
-
 @end
 
 @implementation SelVideoPlayer
@@ -66,21 +62,12 @@
     UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
     if (orientation == UIDeviceOrientationLandscapeLeft){
         if (!_isFullScreen){
-            if (_isLandscape) {
-                //播放器所在控制器页面支持旋转情况下，和正常情况是相反的
-                [self _videoZoomInWithDirection:UIInterfaceOrientationLandscapeRight];
-            }else{
-                [self _videoZoomInWithDirection:UIInterfaceOrientationLandscapeLeft];
-            }
+           [self _videoZoomInWithDirection:UIInterfaceOrientationLandscapeRight];
         }
     }
     else if (orientation == UIDeviceOrientationLandscapeRight){
         if (!_isFullScreen){
-            if (_isLandscape) {
-                [self _videoZoomInWithDirection:UIInterfaceOrientationLandscapeLeft];
-            }else{
-                [self _videoZoomInWithDirection:UIInterfaceOrientationLandscapeRight];
-            }
+           [self _videoZoomInWithDirection:UIInterfaceOrientationLandscapeLeft];
         }
     }
     else if(orientation == UIDeviceOrientationPortrait){
@@ -90,7 +77,6 @@
     }
 }
 
-
 /**
  视频放大全屏幕
  @param orientation 旋转方向
@@ -99,41 +85,22 @@
 {
     _originalSuperview = self.superview;
     _originalRect = self.frame;
-    
     UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
     [keyWindow addSubview:self];
     
-    if (_isLandscape){
-        //手动点击需要旋转方向
-        
-        CGFloat duration = [UIApplication sharedApplication].statusBarOrientationAnimationDuration;
-        [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationLandscapeRight animated:YES];
-        [UIView animateWithDuration:duration animations:^{
-            self.transform = CGAffineTransformMakeRotation(M_PI / 2);
-        }completion:^(BOOL finished) {
-           
-        }];
-            
-    }else{
-        //播放器所在控制器不支持旋转，采用旋转view的方式实现
-        CGFloat duration = [UIApplication sharedApplication].statusBarOrientationAnimationDuration;
+    CGFloat duration = [UIApplication sharedApplication].statusBarOrientationAnimationDuration;
+    [[UIApplication sharedApplication] setStatusBarOrientation:orientation animated:NO];
+    
+    [UIView animateWithDuration:duration animations:^{
         if (orientation == UIInterfaceOrientationLandscapeLeft){
-            [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationLandscapeRight animated:YES];
-            [UIView animateWithDuration:duration animations:^{
-                self.transform = CGAffineTransformMakeRotation(M_PI / 2);
-            }completion:^(BOOL finished) {
-                
-            }];
+            self.transform = CGAffineTransformMakeRotation(-M_PI/2);
         }else if (orientation == UIInterfaceOrientationLandscapeRight) {
-            [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationLandscapeLeft animated:YES];
-            [UIView animateWithDuration:duration animations:^{
-                self.transform = CGAffineTransformMakeRotation( - M_PI / 2);
-            }completion:^(BOOL finished) {
-                
-            }];
+            self.transform = CGAffineTransformMakeRotation(M_PI/2);
         }
-    }
-
+    }completion:^(BOOL finished) {
+        
+    }];
+    
     self.frame = keyWindow.bounds;
     [self setNeedsLayout];
     [self layoutIfNeeded];
@@ -145,10 +112,11 @@
 - (void)_videoZoomOut
 {
     CGFloat duration = [UIApplication sharedApplication].statusBarOrientationAnimationDuration;
+    [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationPortrait animated:NO];
     [UIView animateWithDuration:duration animations:^{
         self.transform = CGAffineTransformMakeRotation(0);
     }completion:^(BOOL finished) {
-
+        
     }];
     self.frame = _originalRect;
     [_originalSuperview addSubview:self];
@@ -157,11 +125,6 @@
     [self layoutIfNeeded];
     
     self.isFullScreen = NO;
-}
-
-- (void)orientationChanged:(NSNotification *)notify
-{
-    [self orientationAspect];
 }
 
 /** 播放视频 */
@@ -176,11 +139,35 @@
     [_player pause];
 }
 
+- (void)_replayVideo
+{
+    [_player seekToTime:CMTimeMake(0, 1) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+    [self _playVideo];
+}
+
+/** 屏幕翻转监听事件 */
+- (void)orientationChanged:(NSNotification *)notify
+{
+    if (_playerConfiguration.shouldAutorotate) {
+        [self orientationAspect];
+    }
+}
+
+/** 视频播放结束事件监听 */
+- (void)videoDidPlayToEnd:(NSNotification *)notify
+{
+    if (_playerConfiguration.repeatPlay) {
+        [self _replayVideo];
+    }else
+    {
+        [self _pauseVideo];
+    }
+}
+
 /** 创建播放器 以及控制面板*/
 - (void)_setupPlayer
 {
-    _playerItem = [AVPlayerItem playerItemWithURL:_playerConfiguration.sourceUrl];
-    _player = [AVPlayer playerWithPlayerItem:_playerItem];
+    _player = [AVPlayer playerWithPlayerItem:self.playerItem];
     _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
     _playerLayer.backgroundColor = _playerConfiguration.playerBackgroundColor;
     [self _setVideoGravity:_playerConfiguration.videoGravity];
@@ -193,6 +180,7 @@
     }
 }
 
+/** 释放播放器 */
 - (void)_deallocPlayer
 {
     [self _pauseVideo];
@@ -235,6 +223,8 @@
     _playbackControls.fullScreenButton.selected = isFullScreen;
 }
 
+
+/** isPlaying Set方法 */
 - (void)setIsPlaying:(BOOL)isPlaying
 {
     _isPlaying = isPlaying;
@@ -244,6 +234,20 @@
     {
         [self _pauseVideo];
     }
+}
+
+
+/** 懒加载创建playerItem 并添加监听事件 */
+- (AVPlayerItem *)playerItem
+{
+    if (!_playerItem) {
+        _playerItem = [AVPlayerItem playerItemWithURL:_playerConfiguration.sourceUrl];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(videoDidPlayToEnd:)
+                                                     name:AVPlayerItemDidPlayToEndTimeNotification
+                                                   object:nil];
+    }
+    return _playerItem;
 }
 
 /** 播放器控制面板 */
@@ -258,17 +262,21 @@
 
 - (void)layoutSubviews{
     [super layoutSubviews];
+    
     self.playerLayer.frame = self.bounds;
     self.playbackControls.frame = self.bounds;
 }
 
+
+/** 释放Self */
 - (void)dealloc
 {
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIDeviceOrientationDidChangeNotification
                                                   object:nil];
-    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIInterfaceOrientationPortrait] forKey:@"orientation"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
+    [[UIApplication sharedApplication]setStatusBarHidden:NO];
 }
 
 #pragma mark 播放器控制面板代理

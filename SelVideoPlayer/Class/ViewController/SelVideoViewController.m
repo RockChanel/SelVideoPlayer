@@ -26,10 +26,10 @@
     if ([[UIDevice currentDevice].systemVersion floatValue] > 7.0) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
-    
     SelPlayerConfiguration *configuration = [[SelPlayerConfiguration alloc]init];
     configuration.shouldAutoPlay = NO;
     configuration.supportedDoubleTap = YES;
+    configuration.shouldAutorotate = NO;
     configuration.playerBackgroundColor = [UIColor blackColor].CGColor;
     configuration.sourceUrl = [NSURL URLWithString:@"http://baobab.kaiyanapp.com/api/v1/playUrl?vid=78677&editionType=high&source=aliyun&token=7a8e0311f923f77a&vc=3951&u=c0fbb99c266dce4384b138bac746b0cf33617168"];
     configuration.videoGravity = SelVideoGravityResizeAspect;

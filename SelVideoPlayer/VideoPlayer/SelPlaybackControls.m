@@ -9,6 +9,13 @@
 #import "SelPlaybackControls.h"
 #import <Masonry.h>
 
+static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
+@interface SelPlaybackControls()
+
+@property (nonatomic, assign) BOOL isShowing;
+
+@end
+
 @implementation SelPlaybackControls
 
 /** 初始化 */
@@ -19,6 +26,15 @@
         [self setupUI];
     }
     return self;
+}
+
+
+/** 重置控制面板 */
+- (void)_resetPlaybackControls
+{
+    self.bottomControlsBar.alpha = 0;
+    self.isShowing = NO;
+    self.playButton.hidden = YES;
 }
 
 /**
@@ -53,19 +69,116 @@
     self.playButton.selected = isPlaying;
 }
 
+/** 显示或隐藏控制面板 */
+- (void)_playerShowOrHidePlaybackControls
+{
+    if (self.isShowing) {
+        [self _playerHidePlaybackControls];
+    } else {
+        [self _playerShowPlaybackControls];
+    }
+}
+
+/** 显示控制面板 */
+- (void)_playerShowPlaybackControls
+{
+    [self _playerCancelAutoHidePlaybackControls];
+    [UIView animateWithDuration:PlaybackControlsAutoHideTimeInterval animations:^{
+        [self _showPlaybackControls];
+    } completion:^(BOOL finished) {
+        self.isShowing = YES;
+        [self _autoHidePlaybackControls];
+    }];
+}
+
+/** 隐藏控制面板 */
+- (void)_playerHidePlaybackControls
+{
+    [self _playerCancelAutoHidePlaybackControls];
+    [UIView animateWithDuration:PlaybackControlsAutoHideTimeInterval animations:^{
+        [self _hidePlaybackControls];
+    } completion:^(BOOL finished) {
+        self.isShowing = NO;
+    }];
+}
+
+/** 显示控制面板 */
+- (void)_showPlaybackControls
+{
+    self.isShowing = YES;
+    self.bottomControlsBar.alpha = 1;
+    self.playButton.hidden = NO;
+    [self _showOrHideStatusBar];
+}
+
+/** 隐藏控制面板 */
+- (void)_hidePlaybackControls
+{
+    self.isShowing = NO;
+    //self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
+    self.bottomControlsBar.alpha = 0;
+    self.playButton.hidden = YES;
+    if (self.isFullScreen) {
+        [self _showOrHideStatusBar];
+    }
+}
+
+/** 延时自动隐藏控制面板 */
+- (void)_autoHidePlaybackControls
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_playerHidePlaybackControls) object:nil];
+    [self performSelector:@selector(_playerHidePlaybackControls) withObject:nil afterDelay:_hideInterval];
+}
+
+/** 显示或隐藏状态栏 */
+- (void)_showOrHideStatusBar
+{
+    switch (_statusBarHideState) {
+        case SelStatusBarHideStateFollowControls:
+        {
+            [[UIApplication sharedApplication] setStatusBarHidden:!self.isShowing];
+        }
+            break;
+        case SelStatusBarHideStateNever:
+        {
+            [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        }
+            break;
+        case SelStatusBarHideStateAlways:
+        {
+            [[UIApplication sharedApplication] setStatusBarHidden:YES];
+        }
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)setIsFullScreen:(BOOL)isFullScreen
+{
+    _isFullScreen = isFullScreen;
+}
+
+/** 取消延时隐藏playbackControls */
+- (void)_playerCancelAutoHidePlaybackControls
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+}
+
 /** 创建UI */
 - (void)setupUI
 {
     [self addSubview:self.playButton];
     [self addSubview:self.bottomControlsBar];
     
+    [_bottomControlsBar addSubview:self.fullScreenButton];
     [_bottomControlsBar addSubview:self.playTimeLabel];
     [_bottomControlsBar addSubview:self.totalTimeLabel];
-    [_bottomControlsBar addSubview:self.fullScreenButton];
     [_bottomControlsBar addSubview:self.progress];
     [_bottomControlsBar addSubview:self.videoSlider];
     
     [self makeConstraints];
+    [self _resetPlaybackControls];
     [self addGesture];
 }
 
@@ -95,33 +208,33 @@
     
     [_bottomControlsBar mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.bottom.equalTo(self);
-        make.height.mas_equalTo(30);
+        make.height.equalTo(@30);
     }];
     
     [_fullScreenButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.bottom.mas_equalTo(-5);
-        make.size.mas_equalTo(CGSizeMake(20, 20));
+        make.right.bottom.equalTo(_bottomControlsBar);
+        make.size.mas_equalTo(CGSizeMake(30, 30));
     }];
     
     [_playTimeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(5);
-        make.width.mas_equalTo(45);
-        make.centerY.mas_equalTo(_bottomControlsBar.mas_centerY);
-    }];
-    
-    [_totalTimeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.mas_equalTo(_fullScreenButton.mas_left).offset(-5);
-        make.width.mas_equalTo(45);
-        make.centerY.mas_equalTo(_bottomControlsBar.mas_centerY);
-    }];
-    
-    [_progress mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.playTimeLabel.mas_right).offset(5);
-        make.right.equalTo(self.totalTimeLabel.mas_left).offset(-5);
-        make.height.mas_equalTo(2);
+        make.left.equalTo(_bottomControlsBar).offset(5);
+        make.width.equalTo(@45);
         make.centerY.equalTo(_bottomControlsBar.mas_centerY);
     }];
     
+    [_totalTimeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(_fullScreenButton.mas_left).offset(-5);
+        make.width.equalTo(@45);
+        make.centerY.equalTo(_bottomControlsBar.mas_centerY);
+    }];
+    
+    [_progress mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(_playTimeLabel.mas_right).offset(5);
+        make.right.equalTo(_totalTimeLabel.mas_left).offset(-5);
+        make.height.equalTo(@2);
+        make.centerY.equalTo(_bottomControlsBar.mas_centerY);
+    }];
+
     [_videoSlider mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(_progress);
     }];
@@ -133,6 +246,7 @@
     if (!_bottomControlsBar) {
         _bottomControlsBar = [[UIView alloc]init];
         _bottomControlsBar.userInteractionEnabled = YES;
+        _bottomControlsBar.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _bottomControlsBar;
 }
@@ -145,6 +259,7 @@
         [_playButton setImage:[UIImage imageNamed:@"btn_play"] forState:UIControlStateNormal];
         [_playButton setImage:[UIImage imageNamed:@"btn_pause"] forState:UIControlStateSelected];
         [_playButton addTarget:self action:@selector(playAction:) forControlEvents:UIControlEventTouchUpInside];
+        _playButton.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _playButton;
 }
@@ -157,6 +272,7 @@
         [_fullScreenButton setImage:[UIImage imageNamed:@"ic_turn_screen_white_18x18_"] forState:UIControlStateNormal];
         [_fullScreenButton setImage:[UIImage imageNamed:@"ic_zoomout_screen_white_18x18_"] forState:UIControlStateSelected];
         [_fullScreenButton addTarget:self action:@selector(fullScreenAction) forControlEvents:UIControlEventTouchUpInside];
+        _fullScreenButton.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _fullScreenButton;
 }
@@ -172,6 +288,7 @@
         _playTimeLabel.adjustsFontSizeToFitWidth = YES;
         _playTimeLabel.textAlignment = NSTextAlignmentCenter;
         _playTimeLabel.textColor = [UIColor whiteColor];
+        _playTimeLabel.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _playTimeLabel;
 }
@@ -186,6 +303,7 @@
         _totalTimeLabel.adjustsFontSizeToFitWidth = YES;
         _totalTimeLabel.textAlignment = NSTextAlignmentCenter;
         _totalTimeLabel.textColor = [UIColor whiteColor];
+        _totalTimeLabel.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _totalTimeLabel;
 }
@@ -196,6 +314,7 @@
 {
     if (!_progress) {
         _progress = [[UIProgressView alloc]init];
+        _progress.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _progress;
 }
@@ -211,6 +330,7 @@
         [_videoSlider addTarget:self action:@selector(progressSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
         //结束拖动事件
         [_videoSlider addTarget:self action:@selector(progressSliderTouchEnded:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchCancel | UIControlEventTouchUpOutside];
+        _videoSlider.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _videoSlider;
 }

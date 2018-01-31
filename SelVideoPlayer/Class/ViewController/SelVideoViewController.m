@@ -23,6 +23,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.view.backgroundColor = [UIColor whiteColor];
+    
     if ([[UIDevice currentDevice].systemVersion floatValue] > 7.0) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
@@ -31,6 +33,7 @@
     configuration.supportedDoubleTap = YES;
     configuration.shouldAutorotate = YES;
     configuration.repeatPlay = NO;
+    configuration.statusBarHideState = SelStatusBarHideStateFollowControls;
     configuration.playerBackgroundColor = [UIColor blackColor].CGColor;
     configuration.sourceUrl = [NSURL URLWithString:@"http://baobab.kaiyanapp.com/api/v1/playUrl?vid=78677&editionType=high&source=aliyun&token=7a8e0311f923f77a&vc=3951&u=c0fbb99c266dce4384b138bac746b0cf33617168"];
     configuration.videoGravity = SelVideoGravityResizeAspect;
@@ -39,9 +42,9 @@
     [self.view addSubview:_player];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+- (void)viewDidDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:animated];
+    [super viewDidDisappear:animated];
     [_player _deallocPlayer];
 }
 

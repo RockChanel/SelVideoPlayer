@@ -9,10 +9,19 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSUInteger,SelVideoGravity){
+/** 视频拉伸方式 */
+typedef NS_ENUM(NSUInteger, SelVideoGravity){
     SelVideoGravityResize,       //非均匀拉伸。两个维度完全填充至整个视图区域
     SelVideoGravityResizeAspect,     //等比例拉伸，直到一个维度到达区域边界
     SelVideoGravityResizeAspectFill, //等比例拉伸，直到填充满整个视图区域，其中一个维度的部分区域会被裁剪
+};
+
+/** 全屏状态下状态栏显示方式 */
+typedef NS_ENUM(NSInteger, SelStatusBarHideState)
+{
+    SelStatusBarHideStateFollowControls = 0, //跟随控制面板显示
+    SelStatusBarHideStateNever, //从不显示
+    SelStatusBarHideStateAlways, //一直显示
 };
 
 @interface SelPlayerConfiguration : NSObject
@@ -31,10 +40,9 @@ typedef NS_ENUM(NSUInteger,SelVideoGravity){
 @property (nonatomic, assign) BOOL supportedDoubleTap;
 /** 是否支持自动转屏 */
 @property (nonatomic, assign) BOOL shouldAutorotate;
-
-
-
-/** 是否支持横屏全屏播放 */
-//@property (nonatomic, assign) BOOL supportedFullScreen;
+/** 隐藏控制面板延时时间 缺省5s */
+@property (nonatomic, assign) NSTimeInterval hideControlsInterval;
+/** 全屏状态下状态栏显示方式 */
+@property (nonatomic, assign) SelStatusBarHideState statusBarHideState;
 
 @end

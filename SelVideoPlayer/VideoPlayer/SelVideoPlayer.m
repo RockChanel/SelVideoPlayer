@@ -69,6 +69,14 @@ typedef NS_ENUM(NSInteger, SelVideoPlayerState) {
     return self;
 }
 
+/** 屏幕翻转监听事件 */
+- (void)orientationChanged:(NSNotification *)notify
+{
+    if (_playerConfiguration.shouldAutorotate) {
+        [self orientationAspect];
+    }
+}
+
 /** 根据屏幕旋转方向改变当前视频屏幕状态 */
 - (void)orientationAspect
 {
@@ -119,11 +127,13 @@ typedef NS_ENUM(NSInteger, SelVideoPlayerState) {
     [self layoutIfNeeded];
     
     self.isFullScreen = YES;
+    [self.playbackControls _showOrHideStatusBar];
 }
 
 /** 视频缩小屏幕 */
 - (void)_videoZoomOut
 {
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
     CGFloat duration = [UIApplication sharedApplication].statusBarOrientationAnimationDuration;
     [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationPortrait animated:NO];
     [UIView animateWithDuration:duration animations:^{
@@ -174,14 +184,6 @@ typedef NS_ENUM(NSInteger, SelVideoPlayerState) {
         if (self.player.currentItem.status == AVPlayerStatusReadyToPlay) {
             
         }
-    }
-}
-
-/** 屏幕翻转监听事件 */
-- (void)orientationChanged:(NSNotification *)notify
-{
-    if (_playerConfiguration.shouldAutorotate) {
-        [self orientationAspect];
     }
 }
 
@@ -248,6 +250,7 @@ typedef NS_ENUM(NSInteger, SelVideoPlayerState) {
     self.playerLayer = nil;
     self.player = nil;
     self.playbackControls = nil;
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
 
 /**
@@ -278,6 +281,7 @@ typedef NS_ENUM(NSInteger, SelVideoPlayerState) {
 {
     _isFullScreen = isFullScreen;
     _playbackControls.fullScreenButton.selected = isFullScreen;
+    _playbackControls.isFullScreen = isFullScreen;
 }
 
 /** isPlaying Set方法 */
@@ -326,6 +330,8 @@ typedef NS_ENUM(NSInteger, SelVideoPlayerState) {
     if (!_playbackControls) {
         _playbackControls = [[SelPlaybackControls alloc]init];
         _playbackControls.delegate = self;
+        _playbackControls.hideInterval = _playerConfiguration.hideControlsInterval;
+        _playbackControls.statusBarHideState = _playerConfiguration.statusBarHideState;
     }
     return _playbackControls;
 }
@@ -380,7 +386,7 @@ typedef NS_ENUM(NSInteger, SelVideoPlayerState) {
 /** 控制面板单击事件 */
 - (void)tapGesture
 {
-
+    [_playbackControls _playerShowOrHidePlaybackControls];
 }
 
 /** 控制面板双击事件 */

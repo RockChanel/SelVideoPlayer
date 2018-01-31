@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "SelVideoSlider.h"
+#import "SelPlayerConfiguration.h"
 
 /** 播放器控制面板代理 */
 @protocol SelPlaybackControlsDelegate <NSObject>
@@ -54,7 +55,13 @@
 @property (nonatomic, strong) UIProgressView *progress;
 /** 播放器控制面板代理 */
 @property (nonatomic, weak) id<SelPlaybackControlsDelegate> delegate;
+/** 隐藏控制面板延时时间 缺省5s */
+@property (nonatomic, assign) NSTimeInterval hideInterval;
 
+/** 是否处于全屏状态 */
+@property (nonatomic, assign) BOOL isFullScreen;
+/** 全屏状态下状态栏显示方式 */
+@property (nonatomic, assign) SelStatusBarHideState statusBarHideState;
 
 /**
  设置视频时间显示以及滑杆状态
@@ -69,5 +76,9 @@
  @param isPlaying 播放状态
  */
 - (void)_setPlaybackControlsWithIsPlaying:(BOOL)isPlaying;
+/** 显示或隐藏控制面板 */
+- (void)_playerShowOrHidePlaybackControls;
+/** 显示或隐藏状态栏 */
+- (void)_showOrHideStatusBar;
 
 @end

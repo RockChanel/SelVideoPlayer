@@ -76,9 +76,13 @@
  @param isPlaying 播放状态
  */
 - (void)_setPlaybackControlsWithIsPlaying:(BOOL)isPlaying;
+/** progress显示缓冲进度 */
+- (void)_setPlayerProgress:(CGFloat)progress;
 /** 显示或隐藏控制面板 */
 - (void)_playerShowOrHidePlaybackControls;
 /** 显示或隐藏状态栏 */
 - (void)_showOrHideStatusBar;
+/** 取消延时隐藏playbackControls */
+- (void)_playerCancelAutoHidePlaybackControls;
 
 @end

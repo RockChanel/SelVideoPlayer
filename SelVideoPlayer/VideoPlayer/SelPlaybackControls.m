@@ -54,7 +54,6 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
     
     //更新当前播放时间
     self.videoSlider.value = sliderValue;
-    self.progress.progress = sliderValue;
     self.playTimeLabel.text = [NSString stringWithFormat:@"%02zd:%02zd", proMin, proSec];
     //更新总时间
     self.totalTimeLabel.text = [NSString stringWithFormat:@"%02zd:%02zd", durMin, durSec];
@@ -67,6 +66,11 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
 - (void)_setPlaybackControlsWithIsPlaying:(BOOL)isPlaying
 {
     self.playButton.selected = isPlaying;
+}
+
+/** progress显示缓冲进度 */
+- (void)_setPlayerProgress:(CGFloat)progress {
+    [self.progress setProgress:progress animated:NO];
 }
 
 /** 显示或隐藏控制面板 */
@@ -246,7 +250,6 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
     if (!_bottomControlsBar) {
         _bottomControlsBar = [[UIView alloc]init];
         _bottomControlsBar.userInteractionEnabled = YES;
-        _bottomControlsBar.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _bottomControlsBar;
 }
@@ -259,7 +262,6 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
         [_playButton setImage:[UIImage imageNamed:@"btn_play"] forState:UIControlStateNormal];
         [_playButton setImage:[UIImage imageNamed:@"btn_pause"] forState:UIControlStateSelected];
         [_playButton addTarget:self action:@selector(playAction:) forControlEvents:UIControlEventTouchUpInside];
-        _playButton.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _playButton;
 }
@@ -272,7 +274,6 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
         [_fullScreenButton setImage:[UIImage imageNamed:@"ic_turn_screen_white_18x18_"] forState:UIControlStateNormal];
         [_fullScreenButton setImage:[UIImage imageNamed:@"ic_zoomout_screen_white_18x18_"] forState:UIControlStateSelected];
         [_fullScreenButton addTarget:self action:@selector(fullScreenAction) forControlEvents:UIControlEventTouchUpInside];
-        _fullScreenButton.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _fullScreenButton;
 }
@@ -288,7 +289,6 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
         _playTimeLabel.adjustsFontSizeToFitWidth = YES;
         _playTimeLabel.textAlignment = NSTextAlignmentCenter;
         _playTimeLabel.textColor = [UIColor whiteColor];
-        _playTimeLabel.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _playTimeLabel;
 }
@@ -303,7 +303,6 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
         _totalTimeLabel.adjustsFontSizeToFitWidth = YES;
         _totalTimeLabel.textAlignment = NSTextAlignmentCenter;
         _totalTimeLabel.textColor = [UIColor whiteColor];
-        _totalTimeLabel.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _totalTimeLabel;
 }
@@ -314,7 +313,8 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
 {
     if (!_progress) {
         _progress = [[UIProgressView alloc]init];
-        _progress.translatesAutoresizingMaskIntoConstraints = NO;
+        _progress.progressTintColor = [UIColor whiteColor];
+        _progress.trackTintColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.4];
     }
     return _progress;
 }
@@ -324,13 +324,13 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
 {
     if (!_videoSlider) {
         _videoSlider = [[SelVideoSlider alloc]init];
+        _videoSlider.maximumTrackTintColor = [UIColor clearColor];
         //开始拖动事件
         [_videoSlider addTarget:self action:@selector(progressSliderTouchBegan:) forControlEvents:UIControlEventTouchDown];
         //拖动中事件
         [_videoSlider addTarget:self action:@selector(progressSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
         //结束拖动事件
         [_videoSlider addTarget:self action:@selector(progressSliderTouchEnded:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchCancel | UIControlEventTouchUpOutside];
-        _videoSlider.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _videoSlider;
 }

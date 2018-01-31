@@ -174,17 +174,53 @@ typedef NS_ENUM(NSInteger, SelVideoPlayerState) {
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"loadedTimeRanges"]){
-        
+        // 计算缓冲进度
+        NSTimeInterval timeInterval = [self availableDuration];
+        CMTime duration = self.playerItem.duration;
+        CGFloat totalDuration = CMTimeGetSeconds(duration);
+        //[_playbackControls _setPlayerProgress:timeInterval / totalDuration];
+        [self.playbackControls.progress setProgress:timeInterval / totalDuration animated:NO];
     }
     else if ([keyPath isEqualToString:@"playbackBufferEmpty"]){
         
+        // 当缓冲是空的时候
+        if (self.playerItem.playbackBufferEmpty) {
+            self.playerState = SelVideoPlayerStateBuffering;
+            [self bufferingSomeSecond];
+        }
+    }
+    else if ([keyPath isEqualToString:@"playbackLikelyToKeepUp"])
+    {
+        // 当缓冲好的时候
+        if (self.playerItem.playbackLikelyToKeepUp && self.playerState == SelVideoPlayerStateBuffering){
+            self.playerState = SelVideoPlayerStatePlaying;
+        }
     }
     else if ([keyPath isEqualToString:@"status"])
     {
         if (self.player.currentItem.status == AVPlayerStatusReadyToPlay) {
-            
+            self.playerState = SelVideoPlayerStatePlaying;
         }
     }
+}
+
+/**
+ *  计算缓冲进度
+ *  @return 缓冲进度
+ */
+- (NSTimeInterval)availableDuration {
+    NSArray *loadedTimeRanges = [[_player currentItem] loadedTimeRanges];
+    CMTimeRange timeRange     = [loadedTimeRanges.firstObject CMTimeRangeValue];// 获取缓冲区域
+    float startSeconds        = CMTimeGetSeconds(timeRange.start);
+    float durationSeconds     = CMTimeGetSeconds(timeRange.duration);
+    NSTimeInterval result     = startSeconds + durationSeconds;// 计算缓冲总进度
+    return result;
+}
+
+
+- (void)bufferingSomeSecond
+{
+    
 }
 
 /** 视频播放结束事件监听 */
@@ -246,10 +282,6 @@ typedef NS_ENUM(NSInteger, SelVideoPlayerState) {
     [self.playbackControls removeFromSuperview];
     [self.playerLayer removeFromSuperlayer];
     [self removeFromSuperview];
-    self.playerItem = nil;
-    self.playerLayer = nil;
-    self.player = nil;
-    self.playbackControls = nil;
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
 
@@ -316,10 +348,13 @@ typedef NS_ENUM(NSInteger, SelVideoPlayerState) {
                      forKeyPath:@"loadedTimeRanges"
                         options:NSKeyValueObservingOptionNew
                         context:nil];
+        // 缓冲区空了，需要等待数据
         [_playerItem addObserver:self
                      forKeyPath:@"playbackBufferEmpty"
                         options:NSKeyValueObservingOptionNew
                         context:nil];
+        // 缓冲区有足够数据可以播放了
+        [_playerItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:NSKeyValueObservingOptionNew context:nil];
     }
     return _playerItem;
 }
@@ -347,9 +382,12 @@ typedef NS_ENUM(NSInteger, SelVideoPlayerState) {
 /** 释放Self */
 - (void)dealloc
 {
-    [_playerItem removeObserver:self forKeyPath:@"status"];
-    [_playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
-    [_playerItem removeObserver:self forKeyPath:@"playbackBufferEmpty"];
+    [self.playbackControls _playerCancelAutoHidePlaybackControls];
+    self.playbackControls.delegate = nil;
+    [self.playerItem removeObserver:self forKeyPath:@"status"];
+    [self.playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+    [self.playerItem removeObserver:self forKeyPath:@"playbackBufferEmpty"];
+    [_playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIDeviceOrientationDidChangeNotification
@@ -360,6 +398,9 @@ typedef NS_ENUM(NSInteger, SelVideoPlayerState) {
         [self.player removeTimeObserver:self.timeObserve];
         self.timeObserve = nil;
     }
+    self.playerLayer = nil;
+    self.player = nil;
+    self.playerItem = nil;
 }
 
 #pragma mark 播放器控制面板代理

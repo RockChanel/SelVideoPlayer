@@ -12,7 +12,12 @@
 static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
 @interface SelPlaybackControls()
 
+/** 控制面板是否显示 */
 @property (nonatomic, assign) BOOL isShowing;
+/** 加载指示器是否显示 */
+@property (nonatomic, assign) BOOL isActivityShowing;
+/** 重新加载是否显示 */
+@property (nonatomic, assign) BOOL isRetryShowing;
 
 @end
 
@@ -34,7 +39,7 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
 {
     self.bottomControlsBar.alpha = 0;
     self.isShowing = NO;
-    self.playButton.hidden = YES;
+    [self _activityIndicatorViewShow:YES];
 }
 
 /**
@@ -59,18 +64,46 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
     self.totalTimeLabel.text = [NSString stringWithFormat:@"%02zd:%02zd", durMin, durSec];
 }
 
-/**
- 根据播放状态调整控制面板UI显示
- @param isPlaying 播放状态
- */
-- (void)_setPlaybackControlsWithIsPlaying:(BOOL)isPlaying
+/** 显示或隐藏加载指示器 */
+- (void)_activityIndicatorViewShow:(BOOL)show
 {
-    self.playButton.selected = isPlaying;
+    self.isActivityShowing = show;
+    if (show) {
+        self.playButton.hidden = YES;
+        [self.activityIndicatorView startAnimating];
+    }
+    else
+    {
+        if (self.isShowing) {
+            self.playButton.hidden = NO;
+        }
+        [self.activityIndicatorView stopAnimating];
+    }
+}
+
+/** 显示或隐藏重新加载按钮 */
+- (void)_retryButtonShow:(BOOL)show
+{
+    self.isRetryShowing = show;
+    if (show) {
+        self.playButton.selected = NO;
+        self.playButton.hidden = YES;
+        self.retryButton.hidden = NO;
+    }else
+    {
+        self.retryButton.hidden = YES;
+    }
 }
 
 /** progress显示缓冲进度 */
 - (void)_setPlayerProgress:(CGFloat)progress {
     [self.progress setProgress:progress animated:NO];
+}
+
+/** 控制播放按钮选择状态 */
+- (void)_setPlayButtonSelect:(BOOL)select
+{
+    self.playButton.selected = select;
 }
 
 /** 显示或隐藏控制面板 */
@@ -91,7 +124,7 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
         [self _showPlaybackControls];
     } completion:^(BOOL finished) {
         self.isShowing = YES;
-        [self _autoHidePlaybackControls];
+        [self _playerAutoHidePlaybackControls];
     }];
 }
 
@@ -111,7 +144,9 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
 {
     self.isShowing = YES;
     self.bottomControlsBar.alpha = 1;
-    self.playButton.hidden = NO;
+    if (!self.isActivityShowing && !self.isRetryShowing) {
+        self.playButton.hidden = NO;
+    }
     [self _showOrHideStatusBar];
 }
 
@@ -119,7 +154,6 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
 - (void)_hidePlaybackControls
 {
     self.isShowing = NO;
-    //self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
     self.bottomControlsBar.alpha = 0;
     self.playButton.hidden = YES;
     if (self.isFullScreen) {
@@ -128,7 +162,7 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
 }
 
 /** 延时自动隐藏控制面板 */
-- (void)_autoHidePlaybackControls
+- (void)_playerAutoHidePlaybackControls
 {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_playerHidePlaybackControls) object:nil];
     [self performSelector:@selector(_playerHidePlaybackControls) withObject:nil afterDelay:_hideInterval];
@@ -158,9 +192,11 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
     }
 }
 
+/** 是否处于全屏状态 */
 - (void)setIsFullScreen:(BOOL)isFullScreen
 {
     _isFullScreen = isFullScreen;
+    self.fullScreenButton.selected = _isFullScreen;
 }
 
 /** 取消延时隐藏playbackControls */
@@ -172,8 +208,11 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
 /** 创建UI */
 - (void)setupUI
 {
+    self.backgroundColor = [UIColor clearColor];
     [self addSubview:self.playButton];
     [self addSubview:self.bottomControlsBar];
+    [self addSubview:self.activityIndicatorView];
+    [self addSubview:self.retryButton];
     
     [_bottomControlsBar addSubview:self.fullScreenButton];
     [_bottomControlsBar addSubview:self.playTimeLabel];
@@ -206,13 +245,22 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
 - (void)makeConstraints
 {
     [_playButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.mas_equalTo(self.superview.center);
+        make.center.equalTo(self);
         make.size.mas_equalTo(CGSizeMake(80, 80));
     }];
     
     [_bottomControlsBar mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.bottom.equalTo(self);
         make.height.equalTo(@30);
+    }];
+    
+    [_activityIndicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self);
+    }];
+    
+    [_retryButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self);
+        make.size.mas_equalTo(CGSizeMake(80, 80));
     }];
     
     [_fullScreenButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -242,6 +290,15 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
     [_videoSlider mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(_progress);
     }];
+}
+
+/** 加载指示器 */
+- (UIActivityIndicatorView *)activityIndicatorView
+{
+    if (!_activityIndicatorView) {
+        _activityIndicatorView = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    }
+    return _activityIndicatorView;
 }
 
 /** 底部控制栏 */
@@ -307,6 +364,17 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
     return _totalTimeLabel;
 }
 
+/** 加载失败重试按钮 */
+- (UIButton *)retryButton
+{
+    if (!_retryButton) {
+        _retryButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_retryButton setImage:[UIImage imageNamed:@"Action_reload_player_100x100_"] forState:UIControlStateNormal];
+        [_retryButton addTarget:self action:@selector(retryAction) forControlEvents:UIControlEventTouchUpInside];
+        _retryButton.hidden = YES;
+    }
+    return _retryButton;
+}
 
 /** 播放进度条 */
 - (UIProgressView *)progress
@@ -358,7 +426,6 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
 /** 播放按钮点击事件 */
 - (void)playAction:(UIButton *)button
 {
-    button.selected = !button.selected;
     if (_delegate && [_delegate respondsToSelector:@selector(playButtonAction:)]) {
         [_delegate playButtonAction:button.selected];
     }
@@ -369,6 +436,14 @@ static const CGFloat PlaybackControlsAutoHideTimeInterval = 0.3f;
 {
     if (_delegate && [_delegate respondsToSelector:@selector(fullScreenButtonAction)]) {
         [_delegate fullScreenButtonAction];
+    }
+}
+
+/** 重试按钮点击事件 */
+- (void)retryAction
+{
+    if (_delegate && [_delegate respondsToSelector:@selector(retryButtonAction)]) {
+        [_delegate retryButtonAction];
     }
 }
 

@@ -21,6 +21,7 @@
 - (void)playButtonAction:(BOOL)selected;
 /** 全屏切换按钮点击事件 */
 - (void)fullScreenButtonAction;
+- (void)retryButtonAction;
 
 /** 滑杆开始拖动 */
 - (void)videoSliderTouchBegan:(SelVideoSlider *)slider;
@@ -57,11 +58,14 @@
 @property (nonatomic, weak) id<SelPlaybackControlsDelegate> delegate;
 /** 隐藏控制面板延时时间 缺省5s */
 @property (nonatomic, assign) NSTimeInterval hideInterval;
-
 /** 是否处于全屏状态 */
 @property (nonatomic, assign) BOOL isFullScreen;
 /** 全屏状态下状态栏显示方式 */
 @property (nonatomic, assign) SelStatusBarHideState statusBarHideState;
+/** 加载指示器 */
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
+/** 加载失败重试按钮 */
+@property (nonatomic, strong) UIButton *retryButton;
 
 /**
  设置视频时间显示以及滑杆状态
@@ -71,11 +75,6 @@
  */
 - (void)_setPlaybackControlsWithPlayTime:(NSInteger)playTime totalTime:(NSInteger)totalTime sliderValue:(CGFloat)sliderValue;
 
-/**
- 根据播放状态调整控制面板UI显示
- @param isPlaying 播放状态
- */
-- (void)_setPlaybackControlsWithIsPlaying:(BOOL)isPlaying;
 /** progress显示缓冲进度 */
 - (void)_setPlayerProgress:(CGFloat)progress;
 /** 显示或隐藏控制面板 */
@@ -84,5 +83,13 @@
 - (void)_showOrHideStatusBar;
 /** 取消延时隐藏playbackControls */
 - (void)_playerCancelAutoHidePlaybackControls;
+/** 延时自动隐藏控制面板 */
+- (void)_playerAutoHidePlaybackControls;
+/** 显示或隐藏加载指示器 */
+- (void)_activityIndicatorViewShow:(BOOL)show;
+/** 控制播放按钮选择状态 */
+- (void)_setPlayButtonSelect:(BOOL)select;
+/** 显示或隐藏重新加载按钮 */
+- (void)_retryButtonShow:(BOOL)show;
 
 @end

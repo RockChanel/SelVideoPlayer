@@ -32,8 +32,6 @@ typedef NS_ENUM(NSInteger, SelStatusBarHideState)
 @property (nonatomic, assign) BOOL shouldAutoPlay;
 /** 视频拉伸方式 */
 @property (nonatomic, assign) SelVideoGravity videoGravity;
-/** 播放器背景色 default is white */
-@property CGColorRef playerBackgroundColor;
 /** 是否重复播放 */
 @property (nonatomic, assign) BOOL repeatPlay;
 /** 是否支持双击暂停或播放 */

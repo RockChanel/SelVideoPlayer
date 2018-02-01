@@ -11,8 +11,11 @@
 @class SelPlayerConfiguration;
 @interface SelVideoPlayer : UIView
 
+/**
+ 初始化播放器
+ @param configuration 播放器配置信息
+ */
 - (instancetype)initWithFrame:(CGRect)frame configuration:(SelPlayerConfiguration *)configuration;
-- (void)orientationAspect;
 
 /** 播放视频 */
 - (void)_playVideo;

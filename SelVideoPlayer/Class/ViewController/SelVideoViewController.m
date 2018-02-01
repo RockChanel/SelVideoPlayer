@@ -10,6 +10,7 @@
 #import "SelVideoPlayer.h"
 #import "SelPlayerConfiguration.h"
 #import "AppDelegate.h"
+#import <Masonry.h>
 
 @interface SelVideoViewController ()
 
@@ -32,13 +33,13 @@
     configuration.shouldAutoPlay = YES;
     configuration.supportedDoubleTap = YES;
     configuration.shouldAutorotate = YES;
-    configuration.repeatPlay = NO;
+    configuration.repeatPlay = YES;
     configuration.statusBarHideState = SelStatusBarHideStateFollowControls;
-    configuration.playerBackgroundColor = [UIColor blackColor].CGColor;
     configuration.sourceUrl = [NSURL URLWithString:@"http://baobab.kaiyanapp.com/api/v1/playUrl?vid=78677&editionType=high&source=aliyun&token=7a8e0311f923f77a&vc=3951&u=c0fbb99c266dce4384b138bac746b0cf33617168"];
     configuration.videoGravity = SelVideoGravityResizeAspect;
     
-    _player = [[SelVideoPlayer alloc]initWithFrame:CGRectMake(0, 100, 375, 300) configuration:configuration];
+    CGFloat width = self.view.frame.size.width;
+    _player = [[SelVideoPlayer alloc]initWithFrame:CGRectMake(0, 100, width, 300) configuration:configuration];
     [self.view addSubview:_player];
 }
 

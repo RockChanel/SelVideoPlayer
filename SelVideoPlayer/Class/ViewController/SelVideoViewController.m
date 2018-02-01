@@ -35,7 +35,7 @@
     configuration.shouldAutorotate = YES;
     configuration.repeatPlay = YES;
     configuration.statusBarHideState = SelStatusBarHideStateFollowControls;
-    configuration.sourceUrl = [NSURL URLWithString:@"http://baobab.kaiyanapp.com/api/v1/playUrl?vid=78677&editionType=high&source=aliyun&token=7a8e0311f923f77a&vc=3951&u=c0fbb99c266dce4384b138bac746b0cf33617168"];
+    configuration.sourceUrl = [NSURL URLWithString:@"http://120.25.226.186:32812/resources/videos/minion_02.mp4"];
     configuration.videoGravity = SelVideoGravityResizeAspect;
     
     CGFloat width = self.view.frame.size.width;

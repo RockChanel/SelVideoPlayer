@@ -64,6 +64,14 @@ typedef NS_ENUM(NSInteger, SelVideoPlayerState) {
         [self _setupPlayControls];
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(appDidEnterBackground:)
+                                                     name:UIApplicationWillResignActiveNotification
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(appDidEnterPlayground:)
+                                                     name:UIApplicationDidBecomeActiveNotification
+                                                   object:nil];
     }
     return self;
 }
@@ -262,6 +270,18 @@ typedef NS_ENUM(NSInteger, SelVideoPlayerState) {
         }
         
     });
+}
+
+/** 应用进入后台 */
+- (void)appDidEnterBackground:(NSNotification *)notify
+{
+    [self _pauseVideo];
+}
+
+/** 应用进入前台 */
+- (void)appDidEnterPlayground:(NSNotification *)notify
+{
+    
 }
 
 /** 视频播放结束事件监听 */

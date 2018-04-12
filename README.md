@@ -5,6 +5,6 @@
 
 简书详解地址：https://www.jianshu.com/p/26ebfc2665d2
 
-![image](https://github.com/RockChanel/SelVideoPlayer/blob/master/SelVideoPlayer.gif)
+![image](https://github.com/RockChanel/SWGIF/blob/master/SelVideoPlayer.gif)
 
 
